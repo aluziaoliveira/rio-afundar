@@ -3,143 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>rio afogado</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      font-family: sans-serif;
-      background: linear-gradient(to bottom, #0099cc, #006699);
-      animation: rioOndas 6s ease-in-out infinite alternate;
-    }
-
-    @keyframes rioOndas {
-      0% {
-        background-position: 0 0;
-      }
-      100% {
-        background-position: 0 20px;
-      }
-    }
-
-    .form-container {
-      position: absolute;
-      top: 5%;
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
-      color: #4b0000;
-      background: rgba(255, 255, 255, 0.3);
-      padding: 20px;
-      border-radius: 10px;
-      backdrop-filter: blur(6px);
-      z-index: 2;
-    }
-
-    label {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    input[type="text"] {
-      width: 300px;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #4b0000;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .responses {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .response-word {
-      position: absolute;
-      color: #4b0000;
-      font-size: 1rem;
-      opacity: 0.3;
-      filter: blur(2px);
-      animation: afundar 8s linear forwards;
-      white-space: nowrap;
-    }
-
-    @keyframes afundar {
-      0% {
-        transform: translateY(0px);
-        opacity: 0.5;
-      }
-      100% {
-        transform: translateY(100vh);
-        opacity: 0.1;
-        filter: blur(4px);
-      }
-    }
-  </style>
+  <title>afundar no rio</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="form-container">
-    <label for="input">o que você quer afundar nesse rio?</label>
-    <input type="text" id="input" placeholder="digite aqui..." />
-    <button onclick="afundar()">afundar</button>
+  <div class="rio">
+    <form id="form">
+      <label for="palavra">o que você quer afundar nesse rio?</label>
+      <input type="text" id="palavra" name="palavra" required />
+      <button type="submit">afundar</button>
+    </form>
+    <div id="afundados"></div>
   </div>
 
-  <div class="responses" id="responses"></div>
+  <audio autoplay loop>
+    <source src="audio.m4a" type="audio/mp4">
+    Seu navegador não suporta áudio.
+  </audio>
 
   <script>
-    function afundar() {
-      const input = document.getElementById("input");
-      const value = input.value.trim();
-      if (value) {
-        let stored = JSON.parse(localStorage.getItem("respostas") || "[]");
-        stored.push({ text: value, x: Math.random() * 90 + 5 });
-        localStorage.setItem("respostas", JSON.stringify(stored));
-        input.value = "";
-        criarPalavraAfundada(value);
-      }
-    }
+    const form = document.getElementById("form");
+    const afundados = document.getElementById("afundados");
 
-    function criarPalavraAfundada(text, x = null) {
-      const span = document.createElement("span");
-      span.classList.add("response-word");
-      span.textContent = text;
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const palavra = document.getElementById("palavra").value;
+      if (palavra.trim() === "") return;
 
-      const left = x !== null ? x : Math.random() * 90 + 5;
-      span.style.left = `${left}%`;
-      span.style.top = `0%`;
+      const div = document.createElement("div");
+      div.className = "palavra-afundada";
+      div.innerText = palavra;
+      afundados.appendChild(div);
 
-      document.getElementById("responses").appendChild(span);
-    }
+      setTimeout(() => {
+        div.style.transform = "translateY(200px)";
+        div.style.opacity = "0.2";
+        div.style.filter = "blur(4px)";
+      }, 100);
 
-    function mostrarRespostas() {
-      const stored = JSON.parse(localStorage.getItem("respostas") || "[]");
-      stored.forEach(resp => criarPalavraAfundada(resp.text, resp.x));
-    }
-
-    window.onload = mostrarRespostas;
+      form.reset();
+    });
   </script>
 
 </body>
