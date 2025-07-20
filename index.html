@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>rio das memórias</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      height: 100%;
+      background: black;
+    }
+
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .pergunta {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: darkred;
+      background-color: rgba(0,0,0,0.6);
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 1.2em;
+      text-transform: lowercase;
+    }
+
+    .formulario {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 8px 12px;
+      background-color: darkred;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .mensagens {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mensagem {
+      color: white;
+      font-size: 1em;
+      background-color: rgba(0,0,0,0.4);
+      padding: 5px 10px;
+      border-radius: 5px;
+      filter: blur(6px);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <video autoplay muted loop>
+    <source src="https://cdn.pixabay.com/vimeo/414103505/river-88455.mp4?width=1280&hash=25802c415e477b86f203ea7cbb1a08f116db5c94" type="video/mp4">
+    Seu navegador não suporta vídeo HTML5.
+  </video>
+
+  <audio id="somAgua" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/25/audio_0a393d8da2.mp3" type="audio/mp3">
+    Seu navegador não suporta áudio.
+  </audio>
+
+  <div class="pergunta">o que você quer deixar afogar?</div>
+
+  <div class="formulario">
+    <input type="text" id="mensagemInput" placeholder="digite aqui..." />
+    <button onclick="enviarMensagem()">enviar</button>
+  </div>
+
+  <div class="mensagens" id="mensagens"></div>
+
+  <script>
+    const mensagens = JSON.parse(localStorage.getItem("mensagens") || "[]");
+    const mensagensDiv = document.getElementById("mensagens");
+    const somAgua = document.getElementById("somAgua");
+
+    function renderizarMensagens() {
+      mensagensDiv.innerHTML = "";
+      mensagens.forEach(m => {
+        const el = document.createElement("div");
+        el.className = "mensagem";
+        el.textContent = m;
+        mensagensDiv.appendChild(el);
+      });
+    }
+
+    renderizarMensagens();
+
+    function enviarMensagem() {
+      const input = document.getElementById("mensagemInput");
+      const texto = input.value.trim();
+      if (texto.length > 0) {
+        mensagens.push(texto);
+        localStorage.setItem("mensagens", JSON.stringify(mensagens));
+        renderizarMensagens();
+        input.value = "";
+      }
+    }
+
+    // tocar som no primeiro clique
+    document.body.addEventListener("click", () => {
+      somAgua.play();
+    }, { once: true });
+  </script>
+</body>
+</html>
