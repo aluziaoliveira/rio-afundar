@@ -47,6 +47,7 @@
       padding: 20px;
       border-radius: 10px;
       backdrop-filter: blur(5px);
+      z-index: 2;
     }
 
     label {
@@ -77,21 +78,34 @@
 
     .responses {
       position: absolute;
-      bottom: 0;
+      top: 0;
       left: 0;
       width: 100%;
-      padding: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
       z-index: 1;
     }
 
-    .responses span {
+    .response-word {
+      position: absolute;
       color: #4b0000;
       font-size: 1rem;
       opacity: 0.3;
-      filter: blur(3px);
+      filter: blur(2.5px);
+      animation: sink 8s linear forwards;
+      white-space: nowrap;
+    }
+
+    @keyframes sink {
+      0% {
+        transform: translateY(0px);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0.2;
+      }
     }
   </style>
 </head>
@@ -122,4 +136,33 @@
       const input = document.getElementById("input");
       const value = input.value.trim();
       if (value) {
-        let stored
+        let stored = JSON.parse(localStorage.getItem("respostas") || "[]");
+        stored.push({ text: value, x: Math.random() * 90 + 5 });
+        localStorage.setItem("respostas", JSON.stringify(stored));
+        input.value = "";
+        criarPalavraAfundada(value);
+      }
+    }
+
+    function criarPalavraAfundada(text, x = null) {
+      const span = document.createElement("span");
+      span.classList.add("response-word");
+      span.textContent = text;
+
+      const left = x !== null ? x : Math.random() * 90 + 5; // porcentagem
+      span.style.left = `${left}%`;
+      span.style.top = `0%`;
+
+      document.getElementById("responses").appendChild(span);
+    }
+
+    function mostrarRespostas() {
+      const stored = JSON.parse(localStorage.getItem("respostas") || "[]");
+      stored.forEach(resp => criarPalavraAfundada(resp.text, resp.x));
+    }
+
+    window.onload = mostrarRespostas;
+  </script>
+
+</body>
+</html>
