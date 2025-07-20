@@ -3,140 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>rio das memórias</title>
+  <title>rio</title>
   <style>
-    html, body {
+    * {
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      height: 100%;
-      background: black;
+      box-sizing: border-box;
     }
 
-    video {
+    body, html {
+      height: 100%;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    #bg-video {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      min-width: 100%;
+      min-height: 100%;
       object-fit: cover;
+      z-index: -2;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
       z-index: -1;
     }
 
-    .pergunta {
+    .form-container {
       position: absolute;
-      top: 20px;
+      top: 10%;
       left: 50%;
       transform: translateX(-50%);
-      color: darkred;
-      background-color: rgba(0,0,0,0.6);
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-size: 1.2em;
-      text-transform: lowercase;
+      color: #4b0000;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
     }
 
-    .formulario {
-      position: absolute;
-      top: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 5px;
+    label {
+      font-size: 1.5rem;
+      color: #4b0000;
+      margin-bottom: 10px;
+      display: block;
+      text-align: center;
     }
 
     input[type="text"] {
-      padding: 8px;
-      font-size: 1em;
+      width: 300px;
+      padding: 10px;
       border: none;
       border-radius: 5px;
+      margin-bottom: 10px;
+      font-size: 1rem;
     }
 
     button {
-      padding: 8px 12px;
-      background-color: darkred;
+      padding: 10px 20px;
+      background-color: #4b0000;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
 
-    .mensagens {
+    .responses {
       position: absolute;
-      bottom: 10px;
+      bottom: 0;
       left: 0;
       width: 100%;
+      padding: 20px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
+      flex-wrap: wrap;
+      gap: 10px;
+      z-index: 1;
     }
 
-    .mensagem {
-      color: white;
-      font-size: 1em;
-      background-color: rgba(0,0,0,0.4);
-      padding: 5px 10px;
-      border-radius: 5px;
-      filter: blur(6px);
-      opacity: 0.5;
-      pointer-events: none;
+    .responses span {
+      color: #4b0000;
+      font-size: 1rem;
+      opacity: 0.3;
+      filter: blur(3px);
     }
   </style>
 </head>
 <body>
-  <video autoplay muted loop>
-    <source src="https://cdn.pixabay.com/vimeo/414103505/river-88455.mp4?width=1280&hash=25802c415e477b86f203ea7cbb1a08f116db5c94" type="video/mp4">
-    Seu navegador não suporta vídeo HTML5.
+
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="rio.mp4" type="video/mp4">
+    seu navegador não suporta vídeos.
   </video>
 
-  <audio id="somAgua" loop>
-    <source src="https://cdn.pixabay.com/audio/2022/03/25/audio_0a393d8da2.mp3" type="audio/mp3">
-    Seu navegador não suporta áudio.
+  <audio autoplay loop>
+    <source src="audio.mp3" type="audio/mpeg">
+    seu navegador não suporta áudio.
   </audio>
 
-  <div class="pergunta">o que você quer deixar afogar?</div>
+  <div class="overlay"></div>
 
-  <div class="formulario">
-    <input type="text" id="mensagemInput" placeholder="digite aqui..." />
-    <button onclick="enviarMensagem()">enviar</button>
+  <div class="form-container">
+    <label for="input">o que você quer afundar nesse rio?</label>
+    <input type="text" id="input" placeholder="digite aqui..." />
+    <button onclick="afundar()">afundar</button>
   </div>
 
-  <div class="mensagens" id="mensagens"></div>
+  <div class="responses" id="responses"></div>
 
   <script>
-    const mensagens = JSON.parse(localStorage.getItem("mensagens") || "[]");
-    const mensagensDiv = document.getElementById("mensagens");
-    const somAgua = document.getElementById("somAgua");
-
-    function renderizarMensagens() {
-      mensagensDiv.innerHTML = "";
-      mensagens.forEach(m => {
-        const el = document.createElement("div");
-        el.className = "mensagem";
-        el.textContent = m;
-        mensagensDiv.appendChild(el);
-      });
-    }
-
-    renderizarMensagens();
-
-    function enviarMensagem() {
-      const input = document.getElementById("mensagemInput");
-      const texto = input.value.trim();
-      if (texto.length > 0) {
-        mensagens.push(texto);
-        localStorage.setItem("mensagens", JSON.stringify(mensagens));
-        renderizarMensagens();
-        input.value = "";
-      }
-    }
-
-    // tocar som no primeiro clique
-    document.body.addEventListener("click", () => {
-      somAgua.play();
-    }, { once: true });
-  </script>
-</body>
-</html>
+    function afundar() {
+      const input = document.getElementById("input");
+      const value = input.value.trim();
+      if (value) {
+        let stored
