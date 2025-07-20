@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>rio</title>
+  <title>rio afogado</title>
   <style>
     * {
       margin: 0;
@@ -11,51 +11,41 @@
       box-sizing: border-box;
     }
 
-    body, html {
+    html, body {
       height: 100%;
       overflow: hidden;
       font-family: sans-serif;
+      background: linear-gradient(to bottom, #0099cc, #006699);
+      animation: rioOndas 6s ease-in-out infinite alternate;
     }
 
-    #bg-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      min-width: 100%;
-      min-height: 100%;
-      object-fit: cover;
-      z-index: -2;
-    }
-
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: -1;
+    @keyframes rioOndas {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 0 20px;
+      }
     }
 
     .form-container {
       position: absolute;
-      top: 10%;
+      top: 5%;
       left: 50%;
       transform: translateX(-50%);
+      text-align: center;
       color: #4b0000;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.3);
       padding: 20px;
       border-radius: 10px;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(6px);
       z-index: 2;
     }
 
     label {
       font-size: 1.5rem;
-      color: #4b0000;
       margin-bottom: 10px;
       display: block;
-      text-align: center;
     }
 
     input[type="text"] {
@@ -63,11 +53,11 @@
       padding: 10px;
       border: none;
       border-radius: 5px;
-      margin-bottom: 10px;
       font-size: 1rem;
     }
 
     button {
+      margin-top: 10px;
       padding: 10px 20px;
       background-color: #4b0000;
       color: white;
@@ -83,7 +73,6 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      overflow: hidden;
       z-index: 1;
     }
 
@@ -92,36 +81,25 @@
       color: #4b0000;
       font-size: 1rem;
       opacity: 0.3;
-      filter: blur(2.5px);
-      animation: sink 8s linear forwards;
+      filter: blur(2px);
+      animation: afundar 8s linear forwards;
       white-space: nowrap;
     }
 
-    @keyframes sink {
+    @keyframes afundar {
       0% {
         transform: translateY(0px);
-        opacity: 0.6;
+        opacity: 0.5;
       }
       100% {
         transform: translateY(100vh);
-        opacity: 0.2;
+        opacity: 0.1;
+        filter: blur(4px);
       }
     }
   </style>
 </head>
 <body>
-
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="rio.mp4" type="video/mp4">
-    seu navegador não suporta vídeos.
-  </video>
-
-  <audio autoplay loop>
-    <source src="audio.mp3" type="audio/mpeg">
-    seu navegador não suporta áudio.
-  </audio>
-
-  <div class="overlay"></div>
 
   <div class="form-container">
     <label for="input">o que você quer afundar nesse rio?</label>
@@ -149,7 +127,7 @@
       span.classList.add("response-word");
       span.textContent = text;
 
-      const left = x !== null ? x : Math.random() * 90 + 5; // porcentagem
+      const left = x !== null ? x : Math.random() * 90 + 5;
       span.style.left = `${left}%`;
       span.style.top = `0%`;
 
